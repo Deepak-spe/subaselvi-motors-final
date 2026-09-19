@@ -1,0 +1,50 @@
+[
+  {
+    "name": "Engine Oil (750)",
+    "price": 570
+  },
+  {
+    "name": "Engine Oil (900)",
+    "price": 675
+  },
+  {
+    "name": "Engine Oil (1000)",
+    "price": 600
+  },
+  {
+    "name": "Engine Oil (1200)",
+    "price": 900
+  },
+  {
+    "name": "Brake shoe 110",
+    "price": 250
+  },
+  {
+    "name": "Brake shoe 130",
+    "price": 250
+  },
+  {
+    "name": "Labour",
+    "price": 100
+  },
+  {
+    "name": "Bearing",
+    "price": 300
+  },
+  {
+    "name": "V bush",
+    "price": 180
+  },
+  {
+    "name": "R bush",
+    "price": 456
+  },
+  {
+    "name": "V belt",
+    "price": 234
+  },
+  {
+    "name": "Clutch oil seal",
+    "price": 123
+  }
+]

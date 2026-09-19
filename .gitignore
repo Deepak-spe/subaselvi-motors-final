@@ -1,0 +1,10 @@
+node_modules/
+data/invoices.xlsx
+data/counter.json
+server.log
+
+.vercel
+.env*
+
+# Local Netlify folder
+.netlify

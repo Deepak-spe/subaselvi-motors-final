@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Subaselvi Motors - Portal & Billing System</title>
+  <link rel="stylesheet" href="style.css?v=16" />
+</head>
+
+<body>
+
+  <!-- ===================== LOGIN VIEW ===================== -->
+  <div id="loginView" class="login-wrapper">
+    <div class="login-card">
+      <div class="login-header">
+        <img src="tvs-logo.png" alt="TVS Logo" class="login-logo" />
+        <h1 class="login-title">Subaselvi Motors</h1>
+        <p class="login-subtitle">Authorised Dealer - TVS Motor Company Limited</p>
+      </div>
+
+      <form id="loginForm" class="login-form" autocomplete="off">
+        <div class="form-group" id="dealershipGroup">
+          <label for="dealershipCode">Dealership Code</label>
+          <input type="text" id="dealershipCode" placeholder="Enter Dealership Code" value=""
+            autocomplete="new-password" required />
+        </div>
+
+        <div class="form-group" id="roleGroup">
+          <label for="roleSelect">Role</label>
+          <select id="roleSelect" required>
+            <option value="" disabled selected>-- Select Role --</option>
+            <option value="service">Service</option>
+            <option value="tvs_credit">TVS Credit</option>
+            <option value="mahindra">Mahindra</option>
+          </select>
+        </div>
+
+        <div class="form-group hidden" id="passwordGroup">
+          <label for="rolePassword" id="passwordLabel">Password</label>
+          <input type="password" id="rolePassword" placeholder="Enter Password" />
+        </div>
+
+        <button type="submit" id="loginBtn" class="login-submit-btn">Login to System</button>
+        <button type="button" id="backToUserBtn" class="secondary-btn hidden"
+          style="margin-top: 10px; width: 100%;">Back to Staff Login</button>
+        <p id="loginStatus" class="login-status"></p>
+
+        <div id="adminLinkContainer" style="text-align: center; margin-top: 15px;">
+          <p style="font-size: 14px; color: #555;">Are you an Admin? <a href="#" id="openAdminBtn"
+              style="color: #0b4f6c; font-weight: bold; text-decoration: none;">Admin Console</a></p>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================== ADMIN VIEW ===================== -->
+  <div id="adminView" class="admin-wrapper hidden no-print">
+    <div class="admin-card">
+      <header class="admin-card-header">
+        <img src="tvs-logo.png" alt="TVS Logo" class="admin-logo" />
+        <h2>Subaselvi Motors</h2>
+        <span class="admin-badge">Admin Portal</span>
+      </header>
+
+      <div class="admin-action-box">
+        <p class="admin-instruction">Select an action to manage product catalog or invoice database:</p>
+
+        <!-- Invoice Statistics Section -->
+        <div class="statistics-section" style="margin-bottom: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; border: 1px solid #dee2e6;">
+          <h3 style="margin: 0 0 15px 0; color: #1a1a7a; font-size: 18px;">Invoice Statistics</h3>
+          <div id="statisticsContent" style="display: none;">
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px;">
+              <thead>
+                <tr style="background: #1a1a7a; color: white;">
+                  <th style="padding: 10px; text-align: left; border: 1px solid #1a1a7a;">Role</th>
+                  <th style="padding: 10px; text-align: center; border: 1px solid #1a1a7a;">Counter Value</th>
+                  <th style="padding: 10px; text-align: center; border: 1px solid #1a1a7a;">Actual Invoices</th>
+                  <th style="padding: 10px; text-align: center; border: 1px solid #1a1a7a;">Missing Records</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="padding: 10px; border: 1px solid #dee2e6; font-weight: bold;">Service (TVS)</td>
+                  <td style="padding: 10px; text-align: center; border: 1px solid #dee2e6;" id="statServiceCounter">-</td>
+                  <td style="padding: 10px; text-align: center; border: 1px solid #dee2e6;" id="statServiceActual">-</td>
+                  <td style="padding: 10px; text-align: center; border: 1px solid #dee2e6;" id="statServiceMissing">-</td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px; border: 1px solid #dee2e6; font-weight: bold;">Credit (TVS Credit)</td>
+                  <td style="padding: 10px; text-align: center; border: 1px solid #dee2e6;" id="statCreditCounter">-</td>
+                  <td style="padding: 10px; text-align: center; border: 1px solid #dee2e6;" id="statCreditActual">-</td>
+                  <td style="padding: 10px; text-align: center; border: 1px solid #dee2e6;" id="statCreditMissing">-</td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px; border: 1px solid #dee2e6; font-weight: bold;">Mahindra</td>
+                  <td style="padding: 10px; text-align: center; border: 1px solid #dee2e6;" id="statMahindraCounter">-</td>
+                  <td style="padding: 10px; text-align: center; border: 1px solid #dee2e6;" id="statMahindraActual">-</td>
+                  <td style="padding: 10px; text-align: center; border: 1px solid #dee2e6;" id="statMahindraMissing">-</td>
+                </tr>
+              </tbody>
+            </table>
+            <button type="button" id="exportStatisticsBtn" class="admin-btn excel-btn" style="background-color: #27ae60;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+              </svg>
+              Export Statistics to Excel
+            </button>
+            <button type="button" id="exportMissingDetailsBtn" class="admin-btn excel-btn" style="background-color: #e74c3c; margin-left: 10px;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+              </svg>
+              Export Missing Details
+            </button>
+          </div>
+          <div id="statisticsLoading" style="text-align: center; color: #666;">Loading statistics...</div>
+          <button type="button" id="refreshStatisticsBtn" class="secondary-btn" style="margin-top: 10px; font-size: 12px; padding: 5px 10px;">Refresh Statistics</button>
+        </div>
+
+        <!-- View All Invoices Section -->
+        <div class="invoices-view-section" style="margin-bottom: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; border: 1px solid #dee2e6;">
+          <h3 style="margin: 0 0 15px 0; color: #1a1a7a; font-size: 18px;">View All Invoices</h3>
+          
+          <div style="margin-bottom: 15px;">
+            <label style="font-weight: bold; margin-right: 10px;">Select Role:</label>
+            <select id="invoiceTypeSelect" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px; min-width: 150px;">
+              <option value="">-- Select Role --</option>
+              <option value="service">Service (TVS)</option>
+              <option value="credit">Credit (TVS Credit)</option>
+              <option value="mahindra">Mahindra</option>
+            </select>
+            <button type="button" id="loadInvoicesBtn" class="secondary-btn" style="margin-left: 10px;">Load Invoices</button>
+          </div>
+          
+          <div id="invoicesTableContainer" style="display: none;">
+            <div style="max-height: 400px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 4px;">
+              <table id="invoicesDataTable" style="width: 100%; border-collapse: collapse; font-size: 12px;">
+                <thead id="invoicesTableHead" style="background: #1a1a7a; color: white; position: sticky; top: 0;">
+                </thead>
+                <tbody id="invoicesTableBody">
+                </tbody>
+              </table>
+            </div>
+            <p id="invoicesCount" style="margin-top: 10px; font-size: 14px; color: #666;"></p>
+          </div>
+          <div id="invoicesLoading" style="display: none; text-align: center; color: #666;">Loading invoices...</div>
+          <div id="invoicesError" style="display: none; text-align: center; color: #e74c3c;"></div>
+          <button type="button" id="debugBlobBtn" class="secondary-btn" style="margin-top: 10px; font-size: 11px; padding: 4px 8px; background-color: #666;">Debug Blob Storage</button>
+          <div id="debugOutput" style="display: none; margin-top: 10px; padding: 10px; background: #fff; border: 1px solid #ccc; border-radius: 4px; font-size: 11px; max-height: 200px; overflow-y: auto;"></div>
+        </div>
+
+        <div class="admin-buttons-container">
+          <!-- Button 1: Upload Products Excel -->
+          <input type="file" id="catalogFileInput" accept=".xlsx, .xls" style="display: none;" />
+          <button type="button" id="uploadCatalogBtn" class="admin-btn upload-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="17 8 12 3 7 8" />
+              <line x1="12" y1="3" x2="12" y2="15" />
+            </svg>
+            Upload Products Excel
+          </button>
+
+          <!-- Button 2: Download Excel Database -->
+          <button type="button" id="downloadExcelBtn" class="admin-btn excel-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            Download Service Excel
+          </button>
+
+          <!-- Button 3: Download Credit Excel Database -->
+          <button type="button" id="downloadCreditExcelBtn" class="admin-btn excel-btn"
+            style="background-color: #8e44ad;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            Download Credit Excel
+          </button>
+          
+          <!-- Button 4: Download Mahindra Excel Database -->
+          <button type="button" id="downloadMahindraExcelBtn" class="admin-btn excel-btn"
+            style="background-color: #e67e22;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            Download Mahindra Excel
+          </button>
+        </div>
+
+        <p id="adminStatusMsg" class="admin-status-msg"></p>
+      </div>
+
+      <div class="admin-footer-actions">
+        <button type="button" id="adminLogoutBtn" class="logout-btn">
+          &larr; Switch Account / Logout
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== SERVICE / BILLING VIEW ===================== -->
+  <div id="serviceView" class="service-wrapper hidden">
+    <div class="top-bar no-print">
+      <div class="top-bar-container">
+        <span class="app-tag">Subaselvi Motors Billing System</span>
+        <div class="top-bar-actions">
+          <button type="button" id="serviceLogoutBtn" class="logout-btn-header">
+            Switch Account / Logout
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-shell no-print">
+
+      <header class="brand-header" style="border-bottom: 2px solid #1a1a7a; margin-bottom: 10px; padding-bottom: 5px;">
+        <div style="display: flex; justify-content: space-between; position: relative;">
+          <!-- Left: Brand and Address -->
+          <div style="text-align: left;">
+            <div style="display: flex; align-items: baseline; gap: 20px;">
+              <h1 class="brand-title" style="margin: 0; font-size: 28px; color: #1a1a7a;">SUBASELVI MOTORS</h1>
+              <span style="font-weight: bold; font-size: 14px; color: #1a1a7a;">GSTIN : 34CDXPK2842J1Z2</span>
+            </div>
+            <p class="brand-subtitle" style="margin: 4px 0 2px 0; font-size: 13px; white-space: nowrap;">Authorised
+              Dealer & Service Center - TVS Motor Company Limited</p>
+            <p class="brand-address" style="margin: 0; font-size: 13px;">325, Vazhudavur Road, Sokkanathanpet,
+              Kathirkamam,</p>
+            <p class="brand-address" style="margin: 0; font-size: 13px;">Puducherry - 605 009.</p>
+            <p class="brand-address" style="margin: 0; font-size: 13px;">Ph No : 7339487774, 7339487775</p>
+          </div>
+          <!-- Right: Logo -->
+          <div style="display: flex; flex-direction: column; align-items: flex-end; position: absolute; top: 0px; right: 15px;">
+            <img src="tvs-logo.png" alt="Logo" style="height: 70px; max-width: 150px; object-fit: contain;" />
+          </div>
+        </div>
+        <div class="invoice-title-wrapper" style="text-align: center; margin-top: 15px;">
+          <h2 class="invoice-title"
+            style="display: inline-block; border: 1px solid #1a1a7a; padding: 4px 15px; margin: 0; font-size: 16px;">
+            CASH INVOICE (SERVICE/SPARE)</h2>
+        </div>
+      </header>
+
+      <section class="top-row">
+        <div class="invoice-meta">
+          <label>Invoice No.
+            <input type="text" id="invoiceNumber" readonly />
+          </label>
+          <label>Invoice Date
+            <input type="date" id="invoiceDate" />
+          </label>
+        </div>
+
+        <div class="receipt-mode">
+          <span class="rm-label">Receipt Mode</span>
+          <div class="toggle-group">
+            <button type="button" class="toggle-btn active" data-mode="Cash" id="btnCash">Cash</button>
+            <button type="button" class="toggle-btn" data-mode="Bank" id="btnBank">Bank</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="customer-section">
+        <h3>Customer Details</h3>
+        <div class="grid-2">
+          <label class="full">Customer Name
+            <input type="text" id="custName" placeholder="Customer name" />
+          </label>
+          <label>Vehicle Type
+            <input type="text" id="vehicleType" placeholder="e.g. Jupiter, XL 100, Apache" />
+          </label>
+          <label>Vehicle Number
+            <input type="text" id="vehicleNo" placeholder="e.g. PY-01-AB-1234" />
+          </label>
+          <label class="full">Phone Number
+            <input type="text" id="phoneNo" placeholder="e.g. 7339487774" />
+          </label>
+        </div>
+      </section>
+
+      <section class="items-section">
+        <h3>Line Items</h3>
+        <table id="itemsTable">
+          <thead>
+            <tr>
+              <th class="col-sl">Sl.No.</th>
+              <th class="col-desc">Description of Product/Service</th>
+              <th class="col-qty">Qty</th>
+              <th class="col-total">Total</th>
+              <th class="col-action no-print"></th>
+            </tr>
+          </thead>
+          <tbody id="itemsBody">
+            <!-- rows injected by app.js -->
+          </tbody>
+          <tfoot>
+            <tr class="grand-total-row">
+              <td colspan="3" class="grand-total-label">Total</td>
+              <td id="grandTotalCell">0.00</td>
+              <td class="no-print"></td>
+            </tr>
+            <tr>
+              <td colspan="5" style="text-align: left; font-weight: bold; padding: 8px 10px; border: 1px solid #1c2b3a;">
+                Total (In words) : <span id="grandTotalWords" style="font-weight: normal; text-transform: uppercase;"></span>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+        <button type="button" id="addRowBtn" class="secondary-btn">+ Add Row</button>
+      </section>
+
+      <section class="footer-section">
+        <label class="jc-field">J.C. No.
+          <input type="text" id="jcNo" placeholder="J.C. No." />
+        </label>
+        <p class="eoe">E&amp;OE</p>
+        <div class="signature-block">
+          <p>For Subaselvi Motors</p>
+          <div class="sign-space"></div>
+          <p>Authorised Signatory</p>
+        </div>
+      </section>
+
+      <div class="actions">
+        <button type="button" id="submitBtn" class="primary-btn">Save &amp; Print Invoice</button>
+      </div>
+
+      <p id="statusMsg"></p>
+    </div>
+  </div>
+
+  <!-- ===================== PRINT VIEW (hidden until submit) ===================== -->
+  <div id="printView" class="print-view hidden">
+    <div class="print-invoice">
+      <header class="brand-header" style="border-bottom: 2px solid #1a1a7a; margin-bottom: 10px; padding-bottom: 5px;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+          <!-- Left: Brand and Address -->
+          <div style="text-align: left;">
+            <div style="display: flex; align-items: baseline; gap: 20px;">
+              <h1 class="brand-title" style="margin: 0; font-size: 28px; color: #1a1a7a;">SUBASELVI MOTORS</h1>
+              <span style="font-weight: bold; font-size: 14px; color: #1a1a7a;">GSTIN : 34CDXPK2842J1Z2</span>
+            </div>
+            <p class="brand-subtitle" style="margin: 4px 0 2px 0; font-size: 13px; white-space: nowrap;">Authorised
+              Dealer & Service Center - TVS Motor Company Limited</p>
+            <p class="brand-address" style="margin: 0; font-size: 13px;">325, Vazhudavur Road, Sokkanathanpet,
+              Kathirkamam,</p>
+            <p class="brand-address" style="margin: 0; font-size: 13px;">Puducherry - 605 009.</p>
+            <p class="brand-address" style="margin: 0; font-size: 13px;">Ph No : 7339487774, 7339487775</p>
+          </div>
+          <!-- Right: Logo -->
+          <div style="display: flex; flex-direction: column; align-items: flex-end; margin-top: 5px; margin-right: 15px;">
+            <img src="tvs-logo.png" alt="Logo" style="height: 70px; max-width: 150px; object-fit: contain;" />
+          </div>
+        </div>
+        <div class="invoice-title-wrapper" style="text-align: center; margin-top: 15px;">
+          <h2 class="invoice-title"
+            style="display: inline-block; border: 1px solid #1a1a7a; padding: 4px 15px; margin: 0; font-size: 16px;">
+            CASH INVOICE (SERVICE/SPARE)</h2>
+        </div>
+      </header>
+
+      <table class="print-meta-table">
+        <tr>
+          <td><strong>Invoice No.:</strong> <span id="pv-invoiceNumber"></span></td>
+          <td><strong>Invoice Date:</strong> <span id="pv-invoiceDate"></span></td>
+          <td><strong>Receipt Mode:</strong> <span id="pv-receiptMode"></span></td>
+        </tr>
+      </table>
+
+      <table class="print-meta-table">
+        <tr>
+          <td colspan="2"><strong>Customer Name:</strong> <span id="pv-custName"></span></td>
+        </tr>
+        <tr>
+          <td><strong>Vehicle Type:</strong> <span id="pv-vehicleType"></span></td>
+          <td><strong>Vehicle Number:</strong> <span id="pv-vehicleNo"></span></td>
+        </tr>
+        <tr>
+          <td colspan="2"><strong>Phone Number:</strong> <span id="pv-phoneNo"></span></td>
+        </tr>
+      </table>
+
+      <table class="print-items-table">
+        <thead>
+          <tr>
+            <th>Sl.No.</th>
+            <th>Description of Product/Service</th>
+            <th>Qty</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody id="pv-itemsBody"></tbody>
+        <tfoot>
+          <tr>
+            <td colspan="3" class="grand-total-label">Total</td>
+            <td id="pv-grandTotal"></td>
+          </tr>
+          <tr>
+            <td colspan="4" style="text-align: left; font-weight: bold; padding: 8px 10px; border: 1px solid #1c2b3a;">
+              Total (In words) : <span id="pv-grandTotalWords" style="font-weight: normal; text-transform: uppercase;"></span>
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+
+      <section class="footer-section">
+        <p><strong>J.C. No.:</strong> <span id="pv-jcNo"></span></p>
+        <p class="eoe">E&amp;OE</p>
+        <div class="signature-block">
+          <p>For Subaselvi Motors</p>
+          <div class="sign-space"></div>
+          <p>Authorised Signatory</p>
+        </div>
+      </section>
+    </div>
+
+    <div class="actions no-print">
+      <button type="button" id="printBtn" class="primary-btn">Print</button>
+      <button type="button" id="newInvoiceBtn" class="secondary-btn">New Invoice</button>
+    </div>
+  </div>
+
+  <!-- ===================== CREDIT VIEW (A5 Landscape) ===================== -->
+  <div id="creditView" class="credit-wrapper hidden">
+    <div class="top-bar no-print">
+      <div class="top-bar-container">
+        <span class="app-tag">TVS Credit Billing System</span>
+        <div class="top-bar-actions">
+          <button type="button" id="downloadCreditExcelBtn2" class="logout-btn-header"
+            style="background-color: #8e44ad; color: white; border-radius: 4px; border: none; padding: 5px 12px; margin-right: 10px; cursor: pointer; display: inline-flex; align-items: center; font-size: 13px; font-weight: bold;">
+            Export Excel
+          </button>
+          <button type="button" id="creditLogoutBtn" class="logout-btn-header">
+            Switch Account / Logout
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="credit-receipt-container">
+      <div class="credit-receipt">
+        <div class="cr-header"
+          style="border-bottom: 2px solid #1a1a7a; margin-bottom: 8px; padding-bottom: 8px; width: 100%; box-sizing: border-box;">
+          <div style="display: flex; justify-content: space-between; position: relative;">
+            <!-- Left: Brand and Address -->
+            <div style="text-align: left; width: 100%;">
+              <h1 class="cr-brand-name"
+                style="margin: 0; font-size: 28px; color: #1a1a7a; font-family: Arial, sans-serif; font-weight: bold; line-height: 1.2;">
+                SUBASELVI MOTORS</h1>
+              <div class="cr-header-details" style="font-size: 13px; color: #333; line-height: 1.4; margin-top: 5px;">
+                <p class="cr-subtitle" style="margin: 0; font-weight: normal; white-space: nowrap;">Authorised Dealer &
+                  Service Center - TVS Motor Company Limited</p>
+                <p class="cr-address" style="margin: 0;">325, Vazhudavur Road, Sokkanathanpet,</p>
+                <p class="cr-address" style="margin: 0;">Kathirkamam, Puducherry - 605 009.</p>
+                <p class="cr-address" style="margin: 0;">Ph No : 7339487775, 7339487774</p>
+              </div>
+            </div>
+
+            <!-- Right: GST No and Logo -->
+            <div style="display: flex; align-items: center; gap: 8px; position: absolute; top: -35px; right: 0;">
+              <div style="font-size: 13px; font-weight: bold; color: #1a1a7a; white-space: nowrap;">GSTIN :
+                34CDXPK2842J1Z2</div>
+              <img src="tvs-logo.png" alt="TVS Logo" class="cr-tvs-logo"
+                style="height: 50px; max-width: 100px; object-fit: contain;" />
+            </div>
+          </div>
+        </div>
+
+        <div class="cr-meta-row"
+          style="position: relative; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <div class="cr-rt-no"
+            style="font-weight: bold; font-size: 14px; color: #1a1a7a; display: flex; align-items: center;">
+            RT NO <span id="crRtNo" class="cr-value-highlight"
+              style="color: #d13030; font-size: 18px; margin-left: 10px; font-family: monospace;"></span>
+          </div>
+          <div class="cr-title-box"
+            style="position: absolute; left: 50%; transform: translateX(-50%); border: 2px solid #1a1a7a; padding: 2px 10px;">
+            <h2 style="margin: 0; font-size: 11px; font-weight: bold; color: #1a1a7a;">CASH RECEIPT</h2>
+          </div>
+          <div class="cr-date" style="font-size: 14px; color: #333; display: flex; align-items: center;">
+            <span style="margin-right: 8px; font-weight: bold;">DATE :</span>
+            <input type="date" id="crDate" class="cr-input-inline"
+              style="border: none; border-bottom: 1px dashed #333; outline: none; background: transparent; font-size: 14px; width: 120px; text-align: center;" />
+          </div>
+        </div>
+
+        <div class="cr-body" style="font-size: 16px;">
+          <div class="cr-line" style="display: flex; align-items: flex-end; margin-bottom: 5px;">
+            <span class="cr-label" style="color: #333;">Received From Shri / Smt</span>
+            <input type="text" id="crCustomerName" class="cr-input-fill"
+              style="flex-grow: 1; border: none; border-bottom: 1px solid #1a1a7a; margin-left: 10px; background: transparent; outline: none; font-size: 18px; font-weight: bold; color: #000; text-transform: uppercase;" />
+          </div>
+          <div class="cr-line" style="display: flex; align-items: flex-end; margin-bottom: 5px;">
+            <span class="cr-label" style="color: #333;">an amount of Rs</span>
+            <input type="text" id="crAmount" class="cr-input-number"
+              style="width: 110px; border: none; border-bottom: 1px solid #1a1a7a; margin-left: 10px; text-align: center; background: transparent; outline: none; font-size: 20px; font-weight: bold; color: #000; text-transform: uppercase;" />
+            <span class="cr-label" style="margin-left: 15px; color: #333;">(in words)</span>
+            <textarea id="crAmountWords" class="cr-input-fill" rows="1"
+              style="flex-grow: 1; border: none; border-bottom: 1px solid #1a1a7a; margin-left: 10px; resize: none; overflow: hidden; line-height: 1.2; align-self: flex-end; background: transparent; outline: none; font-size: 18px; font-weight: bold; color: #000; text-transform: uppercase;"></textarea>
+          </div>
+          <div class="cr-line" style="display: flex; align-items: flex-end; margin-bottom: 5px;">
+            <span class="cr-label" style="color: #333;">towards / in settlement of</span>
+            <input type="text" id="crSettlementOf" class="cr-input-fill"
+              style="flex-grow: 1; border: none; border-bottom: 1px solid #1a1a7a; margin-left: 10px; background: transparent; outline: none; font-size: 18px; font-weight: bold; color: #000;"
+              value="TVS CREDIT SERVICES LIMITED" />
+          </div>
+          <div class="cr-line" style="display: flex; align-items: flex-end; margin-bottom: 5px;">
+            <span class="cr-label" style="color: #333;">Head of Account</span>
+            <input type="text" id="crHeadOfAccount" class="cr-input-fill"
+              style="flex-grow: 1; border: none; border-bottom: 1px solid #1a1a7a; margin-left: 10px; background: transparent; outline: none; font-size: 16px;"
+              value="" readonly />
+          </div>
+          <div class="cr-footer-line" style="display: flex; justify-content: flex-end; margin-top: 5px;">
+            <div class="cr-signature" style="text-align: center; color: #1a1a7a; width: 250px;">
+              <p style="margin: 0; font-size: 14px;">for <strong>SUBASELVI MOTORS</strong></p>
+              <div class="cr-sign-space" style="height: 15px;"></div>
+              <p style="margin: 0; font-size: 14px;">Authorised Signatory</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="actions no-print" style="margin-top: 20px; text-align: center;">
+        <button type="button" id="submitCreditBtn" class="primary-btn">Save & Print Receipt</button>
+        <button type="button" id="newCreditBtn" class="secondary-btn">New Receipt</button>
+      </div>
+      <p id="creditStatusMsg" class="no-print" style="text-align: center; margin-top: 10px;"></p>
+    </div>
+  </div>
+
+  <!-- ===================== MAHINDRA VIEW ===================== -->
+  <div id="mahindraView" class="service-wrapper hidden">
+    <div class="top-bar no-print">
+      <div class="top-bar-container">
+        <span class="app-tag">Mahindra Oil Billing System</span>
+        <div class="top-bar-actions">
+          <button type="button" id="mahindraLogoutBtn" class="logout-btn-header">
+            Switch Account / Logout
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-shell no-print">
+      <header class="brand-header" style="border-bottom: 2px solid #1a1a7a; margin-bottom: 10px; padding-bottom: 5px;">
+        <div style="display: flex; justify-content: space-between; position: relative;">
+          <!-- Left: Brand and Address -->
+          <div style="text-align: left;">
+            <div style="display: flex; align-items: baseline; gap: 20px;">
+              <h1 class="brand-title" style="margin: 0; font-size: 28px; color: #1a1a7a;">SUBASELVI MOTORS</h1>
+              <span style="font-weight: bold; font-size: 14px; color: #1a1a7a;">GSTIN : 34CDXPK2842J1Z2</span>
+            </div>
+            <p class="brand-subtitle" style="margin: 4px 0 2px 0; font-size: 13px; white-space: nowrap;">Authorised
+              Dealer & Service Center - TVS Motor Company Limited</p>
+            <p class="brand-address" style="margin: 0; font-size: 13px;">325, Vazhudavur Road, Sokkanathanpet,
+              Kathirkamam,</p>
+            <p class="brand-address" style="margin: 0; font-size: 13px;">Puducherry - 605 009.</p>
+            <p class="brand-address" style="margin: 0; font-size: 13px;">Ph No : 7339487774, 7339487775</p>
+          </div>
+          <!-- Right: Logo -->
+          <div style="display: flex; flex-direction: column; align-items: flex-end; position: absolute; top: 0px; right: 15px;">
+            <img src="tvs-logo.png" alt="Logo" style="height: 70px; max-width: 150px; object-fit: contain;" />
+          </div>
+        </div>
+        <div class="invoice-title-wrapper" style="text-align: center; margin-top: 15px;">
+          <h2 class="invoice-title"
+            style="display: inline-block; border: 1px solid #1a1a7a; padding: 4px 15px; margin: 0; font-size: 16px;">
+            RECEIPT VOUCHER</h2>
+        </div>
+      </header>
+
+      <section class="top-row">
+        <div class="invoice-meta">
+          <label>Voucher No.
+            <input type="text" id="mhInvoiceNumber" readonly style="font-weight: bold; color: #d13030;" />
+          </label>
+          <label>Voucher Date
+            <input type="date" id="mhInvoiceDate" />
+          </label>
+        </div>
+
+        <div class="receipt-mode">
+          <span class="rm-label">Receipt Mode</span>
+          <div class="toggle-group">
+            <button type="button" class="toggle-btn active" data-mode="Cash" id="mhBtnCash">Cash</button>
+            <button type="button" class="toggle-btn" data-mode="Bank" id="mhBtnBank">Bank</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="customer-section">
+        <h3>Particulars of Customer / Party</h3>
+        <div class="grid-2">
+          <label class="full">Customer Name
+            <input type="text" id="mhCustName" placeholder="Customer name" />
+          </label>
+          <label class="full">Phone Number
+            <input type="text" id="mhPhoneNo" placeholder="e.g. 7339487774" />
+          </label>
+        </div>
+      </section>
+
+      <section class="items-section">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <h3>Products</h3>
+          <button type="button" id="mhUploadPriceBtn" class="secondary-btn" style="padding: 5px 10px; font-size: 12px;">Upload/Update Price</button>
+        </div>
+        <table id="mhItemsTable">
+          <thead>
+            <tr>
+              <th class="col-sl">Sl.No.</th>
+              <th class="col-desc">Description of Product</th>
+              <th class="col-qty">Quantity</th>
+              <th class="col-qty">Price (₹)</th>
+              <th class="col-total">Amount (₹)</th>
+              <th class="col-action no-print"></th>
+            </tr>
+          </thead>
+          <tbody id="mhItemsBody">
+            <!-- Rows injected by app.js -->
+          </tbody>
+          <tfoot>
+            <tr class="grand-total-row">
+              <td colspan="4" class="grand-total-label">Total Amount</td>
+              <td id="mhGrandTotalCell">0.00</td>
+              <td class="no-print"></td>
+            </tr>
+            <tr>
+              <td colspan="6" style="text-align: left; font-weight: bold; padding: 8px 10px; border: 1px solid #1c2b3a;">
+                Total (In words) : <span id="mhGrandTotalWords" style="font-weight: normal; text-transform: uppercase;"></span>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+        <button type="button" id="mhAddRowBtn" class="secondary-btn">+ Add Row</button>
+      </section>
+
+      <section class="footer-section" style="display: flex; justify-content: flex-end; align-items: flex-end; margin-top: 30px;">
+        <div class="signature-block" style="text-align: right;">
+          <p style="margin: 0; font-weight: bold;">For SUBASELVI MOTORS</p>
+          <div class="sign-space" style="height: 40px; display: flex; align-items: center; justify-content: center; color: #999;">
+            (Seal)
+          </div>
+          <p style="margin: 0;">Authorised Signatory</p>
+        </div>
+      </section>
+
+      <div class="actions" style="margin-top: 20px; text-align: center;">
+        <button type="button" id="mhSubmitBtn" class="primary-btn">Save &amp; Print Invoice</button>
+      </div>
+
+      <p id="mhStatusMsg" style="text-align: center; margin-top: 10px;"></p>
+    </div>
+  </div>
+
+  <!-- ===================== PRINT MAHINDRA VIEW (hidden until submit) ===================== -->
+  <div id="printMahindraView" class="print-view hidden">
+    <div class="print-invoice">
+      <header class="brand-header" style="border-bottom: 2px solid #1a1a7a; margin-bottom: 10px; padding-bottom: 5px;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+          <div style="text-align: left;">
+            <div style="display: flex; align-items: baseline; gap: 20px;">
+              <h1 class="brand-title" style="margin: 0; font-size: 28px; color: #1a1a7a;">SUBASELVI MOTORS</h1>
+              <span style="font-weight: bold; font-size: 14px; color: #1a1a7a;">GSTIN : 34CDXPK2842J1Z2</span>
+            </div>
+            <p class="brand-subtitle" style="margin: 4px 0 2px 0; font-size: 13px; white-space: nowrap;">Authorised
+              Dealer & Service Center - TVS Motor Company Limited</p>
+            <p class="brand-address" style="margin: 0; font-size: 13px;">325, Vazhudavur Road, Sokkanathanpet,</p>
+            <p class="brand-address" style="margin: 0; font-size: 13px;">Kathirkamam, Puducherry - 605 009.</p>
+            <p class="brand-address" style="margin: 0; font-size: 13px;">Ph No : 7339487774, 7339487775</p>
+          </div>
+          <div style="display: flex; flex-direction: column; align-items: flex-end; margin-top: 5px; margin-right: 15px;">
+            <img src="tvs-logo.png" alt="Logo" style="height: 70px; max-width: 150px; object-fit: contain;" />
+          </div>
+        </div>
+        <div class="invoice-title-wrapper" style="text-align: center; margin-top: 15px;">
+          <h2 class="invoice-title"
+            style="display: inline-block; border: 1px solid #1a1a7a; padding: 4px 15px; margin: 0; font-size: 16px;">
+            RECEIPT VOUCHER</h2>
+        </div>
+      </header>
+
+      <table class="print-meta-table">
+        <tr>
+          <td><strong>Voucher No.:</strong> <span id="pmh-invoiceNumber" style="font-weight: bold; color: #d13030;"></span></td>
+          <td><strong>Voucher Date:</strong> <span id="pmh-invoiceDate"></span></td>
+          <td><strong>Receipt Mode:</strong> <span id="pmh-receiptMode"></span></td>
+        </tr>
+      </table>
+
+      <table class="print-meta-table">
+        <tr>
+          <td colspan="2"><strong>Customer Name:</strong> <span id="pmh-custName"></span></td>
+        </tr>
+        <tr>
+          <td colspan="2"><strong>Phone Number:</strong> <span id="pmh-phoneNo"></span></td>
+        </tr>
+      </table>
+
+      <table class="print-items-table">
+        <thead>
+          <tr>
+            <th>Sl.No.</th>
+            <th>Description of Product</th>
+            <th>Quantity</th>
+            <th>Price (₹)</th>
+            <th>Amount (₹)</th>
+          </tr>
+        </thead>
+        <tbody id="pmh-itemsBody"></tbody>
+        <tfoot>
+          <tr>
+            <td colspan="4" class="grand-total-label">Total Amount</td>
+            <td id="pmh-grandTotal"></td>
+          </tr>
+          <tr>
+            <td colspan="5" style="text-align: left; font-weight: bold; padding: 8px 10px; border: 1px solid #1c2b3a;">
+              Total (In words) : <span id="pmh-grandTotalWords" style="font-weight: normal; text-transform: uppercase;"></span>
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+
+      <section class="footer-section" style="display: flex; justify-content: flex-end; align-items: flex-end; margin-top: 40px;">
+        <div class="signature-block" style="text-align: right; width: 45%;">
+          <p style="margin: 0; font-weight: bold;">For SUBASELVI MOTORS</p>
+          <div class="sign-space" style="height: 40px; display: flex; align-items: center; justify-content: flex-end; color: #999;">
+            (Seal)
+          </div>
+          <p style="margin: 0; font-weight: bold;">Authorised Signatory</p>
+        </div>
+      </section>
+    </div>
+
+    <div class="actions no-print">
+      <button type="button" id="mhPrintBtn" class="primary-btn">Print</button>
+      <button type="button" id="mhNewInvoiceBtn" class="secondary-btn">New Voucher</button>
+    </div>
+  </div>
+
+  <!-- Mahindra Price Management Modal -->
+  <div id="mhPriceModal" class="hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; display: flex; align-items: center; justify-content: center;">
+    <div style="background: #fff; padding: 25px; border-radius: 8px; width: 400px; max-width: 90%; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+      <h3 style="margin-top: 0; color: #1a1a7a; border-bottom: 2px solid #1a1a7a; padding-bottom: 10px;">Manage Prices</h3>
+      <ul id="mhPriceList" style="list-style: none; padding: 0; max-height: 250px; overflow-y: auto; border: 1px solid #ccc; margin-bottom: 15px; border-radius: 4px;">
+        <!-- List items injected by JS -->
+      </ul>
+      <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+        <input type="number" id="mhNewPriceInput" placeholder="Enter new price (e.g. 1200)" style="flex-grow: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px;" />
+        <button type="button" id="mhAddNewPriceBtn" class="primary-btn" style="padding: 8px 15px; font-size: 14px;">Add</button>
+      </div>
+      <div style="text-align: right;">
+        <button type="button" id="mhClosePriceModalBtn" class="secondary-btn">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js?v=11"></script>
+</body>
+</html>

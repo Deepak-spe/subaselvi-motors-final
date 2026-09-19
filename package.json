@@ -1,0 +1,31 @@
+{
+  "name": "subaselvimotors",
+  "version": "1.0.0",
+  "description": "Cash Invoice billing system for Subaselvi Motors",
+  "main": "server.js",
+  "engines": {
+    "node": "20.x"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch-path=server.js --watch-path=public server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@netlify/blobs": "^11.0.3",
+    "@vercel/blob": "^2.8.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "exceljs": "^4.4.0",
+    "express": "^5.2.1",
+    "serverless-http": "^4.0.0",
+    "sqlite3": "^6.0.1"
+  },
+  "devDependencies": {
+    "localtunnel": "^2.0.2",
+    "pm2": "^7.0.4"
+  }
+}
