@@ -9,11 +9,13 @@ const ExcelJS = require("exceljs");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+const { getBlobData, putBlobData, BLOB_READ_WRITE_TOKEN } = require("./storage");
+
 app.get("/api/debug-env", (req, res) => {
   res.json({
     VERCEL: !!process.env.VERCEL,
-    BLOB_TOKEN: !!process.env.BLOB_READ_WRITE_TOKEN,
-    VERCEL_BLOB: !!vercelBlob
+    BLOB_TOKEN: !!BLOB_READ_WRITE_TOKEN,
+    OK: true
   });
 });
 
@@ -34,40 +36,6 @@ app.use(express.static(path.join(__dirname, "public"), {
 }));
 
 // ---------- Setup helpers ----------
-
-function ensureDataDir() {
-  if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
-}
-
-async function getBlobData(filename, type = "json") {
-  // Local only for now - will work on localhost
-  const localPath = path.join(DATA_DIR, filename);
-  if (fs.existsSync(localPath)) {
-    try {
-      console.log(`Reading ${filename} from local file system`);
-      if (type === "json") return JSON.parse(fs.readFileSync(localPath, "utf-8"));
-      if (type === "buffer") return fs.readFileSync(localPath);
-    } catch (err) {
-      console.error("Local read error:", err);
-    }
-  }
-  console.log(`No data found for ${filename}`);
-  return null;
-}
-
-async function putBlobData(filename, data) {
-  // Local only for now - will work on localhost
-  console.log(`Saving ${filename} to local storage...`);
-  try {
-    ensureDataDir();
-    const localPath = path.join(DATA_DIR, filename);
-    fs.writeFileSync(localPath, data);
-    console.log(`Successfully saved ${filename} to local file system`);
-  } catch (err) {
-    console.error("Local file write error:", err);
-    throw err;
-  }
-}
 
 async function ensureCounter() {
   const data = await getBlobData("counter.json", "json");
@@ -1383,11 +1351,14 @@ ensureMahindraPrices();
 ensureCatalog();
 
 // Always start local server for development
-app.listen(PORT, () => {
-  console.log(`Subaselvi Motors billing app running at http://localhost:${PORT}`);
-  console.log('Press Ctrl+C to stop the server');
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Subaselvi Motors billing app running at http://localhost:${PORT}`);
+    console.log('Press Ctrl+C to stop the server');
+  });
+}
 
 // Export for serverless (Netlify, Vercel)
 module.exports = app;
 module.exports.app = app;
+
