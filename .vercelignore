@@ -1,3 +1,9 @@
-data/
-scratch/
+node_modules
+.git
+.netlify
+.netlify-build
+.vercel
+data
+scratch
+*.xlsx
 .env.local
